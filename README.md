@@ -1,2 +1,2 @@
 
-[Instructions](https://github.com/HDRUK/hackathon-entity-linkage/blob/main/notebooks/Python%20Demo.ipynb)
+* [Demo](https://hdruk.github.io/hackathon-entity-linkage/demo)
