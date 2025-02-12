@@ -10,7 +10,7 @@ Welcome to the HDRUK-ELIXIR hackathon project for HDRUK Gateway entity linkages
 </p>
 </div>
 
-We have provide a [Demo](https://hdruk.github.io/hackathon-entity-linkage/demo) jupyter notebook here to get you started
+We have provide a [Demo](https://github.com/HDRUK/hackathon-entity-linkage/blob/main/Python%20Demo.ipynb)  ([HMTL render](https://hdruk.github.io/hackathon-entity-linkage/demo)) jupyter notebook here to get you started
 
 Data to get you started can be found [here](https://github.com/HDRUK/hackathon-entity-linkage/tree/main/data)
 
