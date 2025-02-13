@@ -4,9 +4,7 @@ from google import genai
 
 load_dotenv()
 
-print(os.environ("GEMINI_API_KEY"))
-
-client = genai.Client(api_key=os.environ("GEMINI_API_KEY"))
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 
 def can_you_find_a_dataset(description):
