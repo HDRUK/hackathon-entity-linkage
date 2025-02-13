@@ -1,8 +1,6 @@
 from fastapi import FastAPI
-from utils import greet
+from routes.find import router as find_router
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": greet()}
+app.include_router(find_router)
