@@ -7,3 +7,5 @@ fastapi
 uvicorn
 rapidfuzz
 python-dotenv
+scikit-learn
+nltk

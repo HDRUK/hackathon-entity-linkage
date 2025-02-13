@@ -13,5 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Expose port 8000 for the FastAPI app
 EXPOSE 8000
 
+RUN python -m nltk.downloader punkt
+RUN python -m nltk.downloader punkt_tab
+
 # Define the command to run the application
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
