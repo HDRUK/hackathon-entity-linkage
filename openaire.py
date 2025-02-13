@@ -13,7 +13,7 @@ def openaire_search(title, entity_type="datasets"):
     response = requests.get(search_url)
     response_dict = response.json()
     result_ids = []
-    for hit in response_dict["response"]["results"]["result"]
+    for hit in response_dict["response"]["results"]["result"]:
         result_ids.append(hit["header"]["dri:objIdentifier"]["$"])
     return result_ids
 
@@ -22,8 +22,8 @@ def openaire_graph(result_ids, entity_type="researchProducts"):
     retrieve all info about the given id
     '''
     dataset_titles = []
-    for id in result_ids
-        graph_url = "%s/%s/%s" % (openaire_graph_base, entity_type, top_hit_id)
+    for id in result_ids:
+        graph_url = "%s/%s/%s" % (openaire_graph_base, entity_type, id)
         response = requests.get(graph_url)
         dataset_titles.append(response.json()["mainTitle"])
     return dataset_titles
