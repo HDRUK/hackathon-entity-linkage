@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from utils.paper_finder import PaperFinder
 from utils.gemini import can_you_find_a_dataset, can_you_find_a_tool
-from utils.matcher import find_best_matches
+from utils.matcher import find_best_matches, find_elastic_matches
 
 
 router = APIRouter(prefix="/find")
@@ -18,7 +18,7 @@ def datasets(data: Request):
     try:
         finder = PaperFinder(data.doi)
         datasets = can_you_find_a_dataset(finder.methods)
-        matches = find_best_matches(datasets)
+        matches = find_elastic_matches(datasets)
         # tools = can_you_find_a_tool(finder.title, finder.code)
         retval = {
             "doi": data.doi,
