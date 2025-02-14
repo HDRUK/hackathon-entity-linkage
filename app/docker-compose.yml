@@ -1,13 +1,12 @@
 version: "3.8"
 
 services:
-  app:
+  fastapi-app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-
     environment:
       # Set environment variables as needed, for example:
       MYSQL_HOST: "db"
@@ -15,13 +14,17 @@ services:
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "example"
       MYSQL_DATABASE: "exampledb"
-      GEMINI_API_KEY: "xxx"
-      WEBUI_API_KEY: "xxx"
+      GEMINI_API_KEY: ""
+      WEBUI_API_KEY: ""
       WEBUI_URL: "http://open-webui:8080"
+      ELASTIC_SERVICE_URL: "https://hdr-uk-gateway-2-dev.es.europe-west1.gcp.cloud.es.io"
+      ELASTICSEARCH_USER: "hdr-gateway-elastic"
+      ELASTICSEARCH_PASS: ""
     networks:
       - my_network
-    command: >
-      uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - open-webui
+      - ollama
 
   db:
     image: mysql:8.0
@@ -88,4 +91,3 @@ volumes:
 networks:
   my_network:
     driver: bridge
-
