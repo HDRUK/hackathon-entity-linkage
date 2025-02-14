@@ -38,5 +38,9 @@ class Database:
 
         return linkages
 
+    def delete_linkages(self):
+        with open(self.linkages_file, "w") as f:
+            json.dump([], f, indent=4)
+
 
 database = Database()

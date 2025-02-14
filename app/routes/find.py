@@ -12,7 +12,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from nltk.tokenize import word_tokenize
 
 
-
 router = APIRouter(prefix="/find")
 
 
@@ -26,14 +25,24 @@ def datasets(data: Request):
     try:
         finder = PaperFinder(data.doi)
         datasets = can_you_find_a_dataset(finder.methods)
-        matches = find_elastic_matches(datasets)
-        for key, match in matches.items():
-            value = {
-                "paper": {"doi": f"https://doi.org/{data.doi}", "title": finder.title},
-                "dataset": match,
-                "score": 1,
-            }
-            database.save_linkages(value)
+        all_matches = find_elastic_matches(datasets)
+        for key, matches in all_matches.items():
+            if not matches:
+                continue
+            for match in matches:
+                if not match:
+                    continue
+                score = match.pop("score") / 18.0
+                value = {
+                    "paper": {
+                        "doi": f"https://doi.org/{data.doi}",
+                        "title": finder.title,
+                    },
+                    "dataset": match,
+                    "score": score,
+                }
+                retval.append(value)
+                database.save_linkages(value)
     except ValueError:
         pass
 
@@ -43,6 +52,12 @@ def datasets(data: Request):
 @router.get("/linkages")
 def get_linkages():
     data = database.get_linkages()
+    return {"data": data}
+
+
+@router.delete("/linkages")
+def delete_linkages():
+    data = database.delete_linkages()
     return {"data": data}
 
 
@@ -100,3 +115,17 @@ def via_abstracts():
         )
 
     return {"data": matches}
+
+
+@router.get("/")
+def all():
+    def add_label(x, label):
+        x["source"] = label
+        return x
+
+    data = [add_label(x, "LLM Gemini") for x in database.get_linkages()]
+    extra = via_abstracts()["data"]
+
+    [data.append(add_label(x, "TfidVectorise")) for x in extra]
+
+    return {"data": data}

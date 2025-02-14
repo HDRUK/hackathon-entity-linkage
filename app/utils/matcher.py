@@ -1,7 +1,7 @@
 from db.database import database
 from rapidfuzz import process
 
-from .elastic import find_elastic_dataset_matches, find_elastic_tools_matches
+from utils.elastic import find_elastic_dataset_matches, find_elastic_tools_matches
 
 
 def find_best_matches(candidates, threshold=80):
@@ -22,9 +22,9 @@ def find_best_matches(candidates, threshold=80):
 
     return matches
 
+
 def find_elastic_matches(candidates):
     matches = {}
     for c in candidates:
         matches[c] = find_elastic_dataset_matches(c)
     return matches
-    
