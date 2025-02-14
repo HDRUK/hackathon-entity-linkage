@@ -14,7 +14,11 @@ services:
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "example"
       MYSQL_DATABASE: "exampledb"
-      GEMINI_API_KEY: "AIzaSyCnUd4mtR1sr9s7jUrYO-xZL_ApDB-Ie94"
+      GEMINI_API_KEY: "xxx"
+      WEBUI_API_KEY: "xxx"
+      WEBUI_URL: "http://open-webui:8080"
+    networks:
+      - my_network
     depends_on:
       - db
       - ollama
@@ -27,6 +31,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: exampledb
+    networks:
+      - my_network
     volumes:
       - db_data:/var/lib/mysql
 
@@ -37,6 +43,8 @@ services:
     pull_policy: always
     tty: true
     restart: unless-stopped
+    networks:
+      - my_network
     ports: 
       - "11434:11434"
     image: ollama/ollama:latest
@@ -55,6 +63,8 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     restart: unless-stopped
+    networks:
+      - my_network
 
   pipelines:
     image: ghcr.io/open-webui/pipelines:main
@@ -66,10 +76,15 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - pipelines:/app/pipelines
-
+    networks:
+      - my_network
 
 volumes:
   ollama: 
   open-webui: 
   db_data: 
   pipelines:
+
+networks:
+  my_network:
+    driver: bridge
