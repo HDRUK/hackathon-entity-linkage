@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from utils.paper_finder import PaperFinder
 from utils.open_webui import can_you_find_a_dataset_webui, list_models_webui
 from utils.matcher import find_best_matches, find_elastic_matches
-from utils.openaire_matcher import query_openaire
+from utils.openaire import openaire_search
 from db.database import database
 import nltk
 
@@ -24,7 +24,7 @@ def datasets(data: Request):
     retval = []
     try:
         finder = PaperFinder(data.doi)
-        datasets = can_you_find_a_dataset_webui(finder.methods)
+        datasets = can_you_find_a_dataset_webui(finder.methods,data.model)
         all_matches = find_elastic_matches(datasets)
         for key, matches in all_matches.items():
             if not matches:
@@ -54,11 +54,11 @@ def datasets(data: Request):
     retval = []
     try:
         finder = PaperFinder(data.doi)
-        datasets = can_you_find_a_dataset_webui(finder.methods, data.model)
-        openaire_matches = query_openaire(datasets)
+        datasets = can_you_find_a_dataset_webui(finder.methods,data.model)
+        openaire_matches = openaire_search(datasets)
 
         return {
-                "Results": {openaire_matches}
+                "Results": openaire_matches
         }
 
     except ValueError:

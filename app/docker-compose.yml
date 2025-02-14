@@ -14,12 +14,12 @@ services:
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "example"
       MYSQL_DATABASE: "exampledb"
-      GEMINI_API_KEY: ""
-      WEBUI_API_KEY: ""
+      GEMINI_API_KEY: "xxx" #you need to provide this val
+      WEBUI_API_KEY: "xxx" #you need to provide this val
       WEBUI_URL: "http://open-webui:8080"
       ELASTIC_SERVICE_URL: "https://hdr-uk-gateway-2-dev.es.europe-west1.gcp.cloud.es.io"
       ELASTICSEARCH_USER: "hdr-gateway-elastic"
-      ELASTICSEARCH_PASS: ""
+      ELASTICSEARCH_PASS: "xxx" #you need to provide this val
     networks:
       - my_network
     depends_on:
