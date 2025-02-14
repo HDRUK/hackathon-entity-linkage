@@ -1,21 +1,7 @@
-import json
+from db.database import database
 from rapidfuzz import process
 
-
-class Database:
-    def __init__(self):
-        self.datasets = []
-        self.publications = []
-        self.tools = []
-        with open("./data/datasets.json") as f:
-            self.datasets = json.load(f)
-        with open("./data/publications.json") as f:
-            self.publications = json.load(f)
-        with open("./data/tools.json") as f:
-            self.tools = json.load(f)
-
-
-database = Database()
+from utils.elastic import find_elastic_dataset_matches, find_elastic_tools_matches
 
 
 def find_best_matches(candidates, threshold=80):
@@ -34,4 +20,11 @@ def find_best_matches(candidates, threshold=80):
         else:
             matches[cand] = None
 
+    return matches
+
+
+def find_elastic_matches(candidates):
+    matches = {}
+    for c in candidates:
+        matches[c] = find_elastic_dataset_matches(c)
     return matches
