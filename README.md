@@ -127,8 +127,12 @@ services:
   openwebui:
     image: openwebui:latest
     environment:
-      - WEBUI_API_KEY=${WEBUI_API_KEY}
-      - WEBUI_URL=${WEBUI_URL}
+      - WEBUI_API_KEY=your-openwebui-api-key
+      - WEBUI_URL=http://openwebui:3000
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_USER=elastic
+      - ELASTICSEARCH_PASSWORD=yourpassword
+      - GEMINI_API_KEY=your-gemini-key
     ports:
       - "3000:3000"
   ollama:
