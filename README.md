@@ -1,4 +1,4 @@
-W# HDRUK-ELIXIR Hackathon: Gateway Entity Linkages
+# HDRUK-ELIXIR Hackathon: Gateway Entity Linkages
 
 Welcome to the HDRUK-ELIXIR hackathon project for HDRUK Gateway entity linkages.
 
