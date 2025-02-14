@@ -1,14 +1,16 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from utils.paper_finder import PaperFinder
-from utils.gemini import can_you_find_a_dataset  # , can_you_find_a_tool
-from utils.matcher import find_best_matches
+from utils.gemini import can_you_find_a_dataset, can_you_find_a_tool
+from utils.matcher import find_best_matches, find_elastic_matches
+
 from db.database import database
 import nltk
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.tokenize import word_tokenize
+
 
 
 router = APIRouter(prefix="/find")
@@ -24,7 +26,7 @@ def datasets(data: Request):
     try:
         finder = PaperFinder(data.doi)
         datasets = can_you_find_a_dataset(finder.methods)
-        matches = find_best_matches(datasets)
+        matches = find_elastic_matches(datasets)
         for key, match in matches.items():
             value = {
                 "paper": {"doi": f"https://doi.org/{data.doi}", "title": finder.title},

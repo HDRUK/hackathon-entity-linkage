@@ -1,6 +1,8 @@
 from db.database import database
 from rapidfuzz import process
 
+from .elastic import find_elastic_dataset_matches, find_elastic_tools_matches
+
 
 def find_best_matches(candidates, threshold=80):
     titles = [x["metadata"]["summary"]["title"] for x in database.datasets]
@@ -19,3 +21,10 @@ def find_best_matches(candidates, threshold=80):
             matches[cand] = None
 
     return matches
+
+def find_elastic_matches(candidates):
+    matches = {}
+    for c in candidates:
+        matches[c] = find_elastic_dataset_matches(c)
+    return matches
+    
