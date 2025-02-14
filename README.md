@@ -33,15 +33,6 @@ The backend will check for `WEBUI_API_KEY` and `WEBUI_URL` to determine whether 
 
 ## Running with Default Google Gemini Mode
 
-This is the simplest way to run the service, requiring only the FastAPI application.
-
-```sh
-cd app
-docker-compose up --build fastapi-app
-```
-
-### **Environment Variables**
-
 In this mode, you need to provide authentication keys for the following services:
 
 - **Elasticsearch** (for dataset and tool matching)
@@ -60,14 +51,10 @@ ELASTICSEARCH_USER=elastic
 ELASTICSEARCH_PASSWORD=yourpassword
 GEMINI_API_KEY=your-gemini-key
 ```
+This is the simplest way to run the service, requiring only the FastAPI application.
 
-Docker Compose will automatically load this file if referenced in the `docker-compose.yml`:
-
-```yaml
-services:
-  fastapi-app:
-    env_file:
-      - .env
+```sh
+docker-compose --env-file .env up --build fastapi-app
 ```
 
 ### **2. Passing Environment Variables Directly in the Command**
@@ -75,24 +62,13 @@ services:
 If you prefer, you can pass the required variables inline when running `docker-compose`:
 
 ```sh
-ELASTICSEARCH_URL=http://elasticsearch:9200 ELASTICSEARCH_USER=elastic ELASTICSEARCH_PASSWORD=yourpassword GEMINI_API_KEY=your-gemini-key docker-compose up --build fastapi-app
+ELASTICSEARCH_URL=http://elasticsearch:9200 \
+ELASTICSEARCH_USER=elastic \
+ELASTICSEARCH_PASSWORD=yourpassword \
+GEMINI_API_KEY=your-gemini-key \
+docker-compose up --build fastapi-app
 ```
 
-### **3. Defining Variables in `docker-compose.override.yml`**
-
-You can also create a `docker-compose.override.yml` file to specify environment variables:
-
-```yaml
-services:
-  fastapi-app:
-    environment:
-      ELASTICSEARCH_URL: "http://elasticsearch:9200"
-      ELASTICSEARCH_USER: "elastic"
-      ELASTICSEARCH_PASSWORD: "yourpassword"
-      GEMINI_API_KEY: "your-gemini-key"
-```
-
----
 
 ## Running with Open Web UI Compatibility
 
@@ -105,7 +81,8 @@ To run the service using **Open Web UI**, you need additional services:
 
 ### **Configuring Environment Variables for Open Web UI Mode**
 
-To enable Open Web UI, set `WEBUI_API_KEY` and `WEBUI_URL`, and also ensure Elasticsearch and Google Gemini configurations are present:
+To enable Open Web UI, in addition to teh above, you must also set `WEBUI_API_KEY` and `WEBUI_URL`
+For example if running using a .env these vars would be:
 
 ```ini
 # .env file
@@ -117,40 +94,9 @@ ELASTICSEARCH_PASSWORD=yourpassword
 GEMINI_API_KEY=your-gemini-key
 ```
 
-Ensure the `docker-compose.yml` file loads these variables:
-
-```yaml
-services:
-  fastapi-app:
-    env_file:
-      - .env
-  openwebui:
-    image: openwebui:latest
-    environment:
-      - WEBUI_API_KEY=your-openwebui-api-key
-      - WEBUI_URL=http://openwebui:3000
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - ELASTICSEARCH_USER=elastic
-      - ELASTICSEARCH_PASSWORD=yourpassword
-      - GEMINI_API_KEY=your-gemini-key
-    ports:
-      - "3000:3000"
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-```
-
 ### **Starting the Services**
 
 Run the following command to start all necessary containers:
-
-```sh
-cd app
-docker-compose up --build
-```
-
-Alternatively, if using a `.env` file, simply run:
 
 ```sh
 docker-compose --env-file .env up --build
