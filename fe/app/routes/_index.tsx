@@ -11,6 +11,7 @@ import {
   Checkbox,
   TableSortLabel,
   Link,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { useLoaderData } from "@remix-run/react";
@@ -56,6 +57,12 @@ export default function Index() {
   const columns: ColumnDef<DataItem[]> = [
     {
       accessorFn: (row) => row.paper.title,
+      id: "type",
+      cell: (info) => <b> Abstract TfidfVectorizer </b>,
+      header: () => <>Source</>,
+    },
+    {
+      accessorFn: (row) => row.paper.title,
       id: "paperTitle",
       cell: (info) => (
         <Link href={info.row.original.paper.doi} target="_blank">
@@ -95,7 +102,6 @@ export default function Index() {
     },
   ];
 
-  //const columnHelper = createColumnHelper<DataItem>();
   const table = useReactTable({
     columns,
     data: rows,
@@ -125,6 +131,11 @@ export default function Index() {
       }}
     >
       <Paper sx={{ width: "80%", overflow: "hidden", p: 3 }}>
+        <Box>
+          <Typography variant="h4">
+            Review: Paper to Dataset Linkages
+          </Typography>
+        </Box>
         <TableContainer>
           <Table>
             <TableHead>

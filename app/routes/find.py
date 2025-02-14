@@ -20,21 +20,28 @@ class Request(BaseModel):
 
 @router.post("/")
 def datasets(data: Request):
-    retval = None
+    retval = []
     try:
         finder = PaperFinder(data.doi)
         datasets = can_you_find_a_dataset(finder.methods)
         matches = find_best_matches(datasets)
-        # tools = can_you_find_a_tool(finder.title, finder.code)
-        retval = {
-            "doi": data.doi,
-            "datasets": matches,
-        }
-    # , "tools": tools}
+        for key, match in matches.items():
+            value = {
+                "paper": {"doi": f"https://doi.org/{data.doi}", "title": finder.title},
+                "dataset": match,
+                "score": 1,
+            }
+            database.save_linkages(value)
     except ValueError:
         pass
 
     return {"data": retval}
+
+
+@router.get("/linkages")
+def get_linkages():
+    data = database.get_linkages()
+    return {"data": data}
 
 
 @router.get("/via-abstracts")
