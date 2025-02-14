@@ -8,3 +8,5 @@ uvicorn
 rapidfuzz
 python-dotenv
 elasticsearch
+scikit-learn
+nltk

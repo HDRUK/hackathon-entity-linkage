@@ -4,6 +4,14 @@ from utils.paper_finder import PaperFinder
 from utils.gemini import can_you_find_a_dataset, can_you_find_a_tool
 from utils.matcher import find_best_matches, find_elastic_matches
 
+from db.database import database
+import nltk
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from nltk.tokenize import word_tokenize
+
+
 
 router = APIRouter(prefix="/find")
 
@@ -14,18 +22,81 @@ class Request(BaseModel):
 
 @router.post("/")
 def datasets(data: Request):
-    retval = None
+    retval = []
     try:
         finder = PaperFinder(data.doi)
         datasets = can_you_find_a_dataset(finder.methods)
         matches = find_elastic_matches(datasets)
-        # tools = can_you_find_a_tool(finder.title, finder.code)
-        retval = {
-            "doi": data.doi,
-            "datasets": matches,
-        }
-    # , "tools": tools}
+        for key, match in matches.items():
+            value = {
+                "paper": {"doi": f"https://doi.org/{data.doi}", "title": finder.title},
+                "dataset": match,
+                "score": 1,
+            }
+            database.save_linkages(value)
     except ValueError:
         pass
 
     return {"data": retval}
+
+
+@router.get("/linkages")
+def get_linkages():
+    data = database.get_linkages()
+    return {"data": data}
+
+
+@router.get("/via-abstracts")
+def via_abstracts():
+    paper_abstracts = [x["abstract"] for x in database.publications]
+    dataset_abstracts = [
+        x["metadata"]["summary"]["description"] for x in database.datasets
+    ]
+
+    tokenized_paper_abstracts = [
+        " ".join(word_tokenize(abstract.lower())) if abstract else " "
+        for abstract in paper_abstracts
+    ]
+    tokenized_dataset_abstracts = [
+        " ".join(word_tokenize(abstract.lower())) if abstract else " "
+        for abstract in dataset_abstracts
+    ]
+
+    vectorizer = TfidfVectorizer(stop_words="english", max_features=5000)
+
+    paper_tfidf = vectorizer.fit_transform(
+        tokenized_paper_abstracts
+    )  # Paper abstracts TF-IDF
+    dataset_tfidf = vectorizer.transform(
+        tokenized_dataset_abstracts
+    )  # Dataset abstracts TF-IDF (same vocab)
+
+    similarity_matrix = cosine_similarity(paper_tfidf, dataset_tfidf)
+
+    matches = []
+    for paper_idx in range(similarity_matrix.shape[0]):
+        similarities = similarity_matrix[paper_idx]
+        best_match_index = similarities.argmax()
+        best_match_score = similarities[best_match_index]
+        if best_match_score < 0.6:
+            continue
+
+        paper = database.publications[int(paper_idx)]
+        dataset = database.datasets[int(best_match_index)]
+
+        matches.append(
+            {
+                "paper": {
+                    "id": paper["id"],
+                    "doi": paper["paper_doi"],
+                    "title": paper["paper_title"],
+                },
+                "dataset": {
+                    "id": dataset["id"],
+                    "title": dataset["metadata"]["summary"]["title"],
+                },
+                "score": float(best_match_score),
+            }
+        )
+
+    return {"data": matches}
