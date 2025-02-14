@@ -19,9 +19,8 @@ services:
       WEBUI_URL: "http://open-webui:8080"
     networks:
       - my_network
-    depends_on:
-      - db
-      - ollama
+    command: >
+      uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   db:
     image: mysql:8.0
