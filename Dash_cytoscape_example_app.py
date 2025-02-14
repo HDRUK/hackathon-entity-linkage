@@ -3,6 +3,9 @@ import pandas as pd
 import networkx as nx
 import nltk
 
+# This is a basic dash app that runs on the Data in the data folder and allows
+# the user to view the existing data. 
+
 from dash import Dash, html, dcc, Input, Output
 import dash_cytoscape as cyto
 

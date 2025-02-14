@@ -17,4 +17,4 @@ RUN python -m nltk.downloader punkt
 RUN python -m nltk.downloader punkt_tab
 
 # Define the command to run the application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
