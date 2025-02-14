@@ -39,14 +39,18 @@ cd app
 docker-compose up --build fastapi-app
 ```
 
+you will need authenication keys for the following additional services:
+- **Elasticsearch** (for dataset and tool matching)
+- **Google Gemini** (for dataset and tool discovery)
+
 #### Running with Open Web UI Compatibility
 
 If you want to run the service using **Open Web UI**, you will need additional services, including:
-- **Open Web UI** (Llama-based text generation)
+- **Open Web UI** (LLM-based text searching)
 - **Ollama** (LLM backend for Open Web UI)
 - **Elasticsearch** (for dataset and tool matching)
-
-The FastAPI backend will check for `WEBUI_API_KEY` and `WEBUI_URL` before deciding whether to use Open Web UI instead of Google Gemini.
+- **Google Gemini** LLM-based text searching) ••• recomended as a fallback
+  
 
 #### **Full Stack with Open Web UI**
 To run the full stack with Open Web UI compatibility, use the provided **`docker-compose.yml`** configuration:
@@ -55,8 +59,8 @@ To run the full stack with Open Web UI compatibility, use the provided **`docker
 cd app
 docker-compose up --build
 ```
-
-Once the stack is installed, a WEBUI_API_KEY will need to be generated from within the open web UI interface that should be running on. http://0.0.0.0/3000
+N.b. The FastAPI backend will check for `WEBUI_API_KEY` and `WEBUI_URL`, and ping the Open web UI interface before deciding whether to use Open Web UI instead of Google Gemini.
+When the stack is installed for the first time, a WEBUI_API_KEY will need to be generated from within the open web UI interface that should be running on. http://0.0.0.0/3000
 
 ## Available API Endpoints
 
