@@ -2,6 +2,8 @@ Welcome to the HDRUK-ELIXIR hackathon project for HDRUK Gateway entity linkages
 
 ### Run service
 
+#### Backend
+
 ```
 cd app
 docker-compose up --build
@@ -15,6 +17,14 @@ curl --location 'http://localhost:8000/find' \
 --data '{
     "doi": "10.1038/s41541-024-00898-w"
 }'
+```
+
+#### Frontend
+
+```
+cd fe
+npx remix vite:build
+npx remix-serve build/server/index.js
 ```
 
 <div style="border: 2px solid black;">
